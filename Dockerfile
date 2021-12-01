@@ -12,7 +12,6 @@ RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
 RUN pip install --user -r TVM_Lambda_Container/requirements.txt
 
 WORKDIR TVM_Lambda_Container/tvm
-RUN mkdir build && cmake/config.cmake build
 
 RUN export TVM_HOME=~/TVM_Lambda_Container/tvm
 RUN export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
