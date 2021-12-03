@@ -16,6 +16,11 @@ WORKDIR TVM_Lambda_Container/tvm
 RUN export TVM_HOME=~/TVM_Lambda_Container/tvm
 RUN export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
+RUN mkdir build
+RUN cmake/config.cmake build
 
+WORKDIR build
+RUN cmake ..
+RUN make -j4
 
 CMD ["lambda_function.lambda_handler"]
