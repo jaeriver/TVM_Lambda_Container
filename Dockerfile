@@ -9,7 +9,7 @@ RUN yum install python3-dev python3-setuptools gcc libtinfo-dev zlib1g-dev build
 
 RUN wget https://cmake.org/files/v3.10/cmake-3.10.0.tar.gz
 RUN tar -xvzf cmake-3.10.0.tar.gz
-RUN cd cmake-3.10.0 & ./bootstrap & make & make install
+RUN cd cmake-3.10.0 && ./bootstrap && make && make install
 # git clone
 RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
 
