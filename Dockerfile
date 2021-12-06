@@ -4,7 +4,6 @@ FROM amazon/aws-lambda-python:3.8
 RUN /var/lang/bin/python3.8 -m pip install --upgrade pip
 
 # install essential library
-RUN yum -y update
 RUN yum install python3-dev python3-setuptools gcc libtinfo-dev zlib1g-dev build-essential libedit-dev libxml2-dev git -y
 RUN yum install gcc-c++
 RUN wget https://cmake.org/files/v3.10/cmake-3.10.0.tar.gz
