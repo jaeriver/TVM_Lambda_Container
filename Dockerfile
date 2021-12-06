@@ -6,8 +6,8 @@ RUN /var/lang/bin/python3.8 -m pip install --upgrade pip
 # install essential library
 RUN yum -y update
 RUN yum install python3-dev python3-setuptools gcc libtinfo-dev zlib1g-dev build-essential libedit-dev libxml2-dev git tar wget gcc-c++ cmake3 -y
+RUN ln -s /usr/bin/cmake3 ~/bin/cmake
 
-RUN wget https://cmake.org/files/v3.10/cmake-3.10.0.tar.gz
 # git clone
 RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
 
