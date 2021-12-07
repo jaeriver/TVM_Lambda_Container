@@ -24,7 +24,7 @@ RUN export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 WORKDIR tvm/build
 RUN cmake ..
-RUN make
+RUN make -j2
 
 
 WORKDIR ../../
