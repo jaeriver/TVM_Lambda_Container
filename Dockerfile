@@ -19,7 +19,7 @@ RUN mkdir tvm/build
 RUN cp config.cmake tvm/build
 RUN env CC=cc CXX=CC
 
-RUN export TVM_HOME=~/TVM_Lambda_Container/tvm
+RUN export TVM_HOME=/home/ec2-user/TVM_Lambda_Container/tvm
 RUN export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 WORKDIR tvm/build
