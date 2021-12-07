@@ -8,6 +8,7 @@ RUN yum -y update
 RUN yum install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-essential libedit-dev libxml2-dev git tar wget gcc gcc-c++ -y
 
 RUN yum -y install cmake3
+RUN yum -y install gcc gcc-c++
 
 RUN export CXX=g++ CC=gcc
 # git clone
