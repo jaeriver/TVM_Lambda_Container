@@ -22,7 +22,7 @@ RUN export TVM_HOME=~/TVM_Lambda_Container/tvm
 RUN export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 WORKDIR tvm/build
-RUN cmake ..
+RUN cmake3 ..
 RUN make -j4
 
 CMD ["lambda_function.lambda_handler"]
