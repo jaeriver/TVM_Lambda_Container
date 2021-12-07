@@ -5,7 +5,7 @@ RUN /var/lang/bin/python3.8 -m pip install --upgrade pip
 
 # install essential library
 RUN yum -y update
-RUN yum -y install cmake3 gcc gcc-c++ && ln -s /usr/bin/cmake3 /usr/bin/cmake
+RUN yum -y --fix-missing install cmake3 gcc gcc-c++ && ln -s /usr/bin/cmake3 /usr/bin/cmake
 RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-essential libedit-dev libxml2-dev git tar wget 
 RUN yum -y install libiprotobuf-dev protobuf-compiler
 
