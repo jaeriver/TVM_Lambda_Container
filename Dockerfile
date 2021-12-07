@@ -18,6 +18,7 @@ RUN pip3 install --user cmake
 WORKDIR TVM_Lambda_Container
 RUN mkdir tvm/build
 RUN cp config.cmake tvm/build
+RUN env CC=cc CXX=CC
 
 RUN export TVM_HOME=~/TVM_Lambda_Container/tvm
 RUN export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
