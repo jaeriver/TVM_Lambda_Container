@@ -7,6 +7,7 @@ RUN /var/lang/bin/python3.8 -m pip install --upgrade pip
 RUN yum -y update
 RUN yum -y install cmake3
 RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-essential libedit-dev libxml2-dev git tar wget gcc gcc-c++
+RUN yum -y install libiprotobuf-dev protobuf-compiler
 
 # git clone
 RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
