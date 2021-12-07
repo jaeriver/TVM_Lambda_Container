@@ -26,4 +26,6 @@ WORKDIR tvm/build
 RUN cmake ..
 RUN make
 
+
+WORKDIR ../../
 CMD ["lambda_function.lambda_handler"]
