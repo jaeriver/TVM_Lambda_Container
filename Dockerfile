@@ -26,6 +26,5 @@ WORKDIR tvm/build
 RUN cmake ..
 RUN make -j2
 
-
-WORKDIR ../../
+RUN cp lambda-ensemble-sequence/ensemble/lambda_function.py /var/task/
 CMD ["lambda_function.lambda_handler"]
