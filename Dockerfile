@@ -5,16 +5,16 @@ RUN /var/lang/bin/python3.8 -m pip install --upgrade pip
 
 # install essential library
 RUN yum -y update
-RUN yum -y --fix-missing install cmake3 gcc gcc-c++ && ln -s /usr/bin/cmake3 /usr/bin/cmake
-RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-essential libedit-dev libxml2-dev git tar wget 
+# RUN yum -y --fix-missing install cmake3 gcc gcc-c++ && ln -s /usr/bin/cmake3 /usr/bin/cmake
+RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-essential libedit-dev libxml2-dev git tar wget gcc gcc-c++
 RUN yum -y install libiprotobuf-dev protobuf-compiler
 
 # git clone
 RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
 
 # install packages
-RUN pip install --user -r TVM_Lambda_Container/requirements.txt
-
+RUN pip3 install --user -r TVM_Lambda_Container/requirements.txt
+RUN pip3 install --user cmake
 WORKDIR TVM_Lambda_Container
 RUN mkdir tvm/build
 RUN cp config.cmake tvm/build
