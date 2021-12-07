@@ -22,6 +22,7 @@ RUN export TVM_HOME=~/TVM_Lambda_Container/tvm
 RUN export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 WORKDIR tvm/build
+RUN yum install gcc gcc-c++
 RUN cmake3 ..
 RUN make -j4
 
