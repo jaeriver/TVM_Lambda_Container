@@ -24,7 +24,9 @@ RUN export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 WORKDIR tvm/build
 RUN cmake ..
-RUN make -j2
+RUN make -j3
 
-RUN cp lambda-ensemble-sequence/ensemble/lambda_function.py /var/task/
+WORKDIR ../../
+
+RUN cp lambda_function.py /var/task/
 CMD ["lambda_function.lambda_handler"]
