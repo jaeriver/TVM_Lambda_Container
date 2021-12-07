@@ -24,6 +24,6 @@ RUN export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 WORKDIR tvm/build
 RUN cmake ..
-RUN make -j4
+RUN make
 
 CMD ["lambda_function.lambda_handler"]
