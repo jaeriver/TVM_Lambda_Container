@@ -8,7 +8,7 @@ RUN yum -y update
 RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-essential libedit-dev libxml2-dev git tar wget gcc gcc-c++
 RUN yum -y install cmake3
 RUN yum remove cmake
-RUN ln -s /usr/bin/cmake3 /sur/bin/cmake
+RUN ln -s /usr/bin/cmake3 /usr/bin/cmake
 
 
 # git clone
