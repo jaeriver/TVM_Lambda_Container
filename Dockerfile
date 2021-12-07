@@ -5,7 +5,7 @@ RUN /var/lang/bin/python3.8 -m pip install --upgrade pip
 
 # install essential library
 RUN yum -y update
-RUN yum -y install cmake3
+RUN yum -y install cmake3 && ln -s /usr/bin/cmake3 /usr/bin/cmake
 RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-essential libedit-dev libxml2-dev git tar wget gcc gcc-c++
 RUN yum -y install libiprotobuf-dev protobuf-compiler
 
@@ -23,7 +23,7 @@ RUN export TVM_HOME=~/TVM_Lambda_Container/tvm
 RUN export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 WORKDIR tvm/build
-RUN cmake3 ..
+RUN cmake ..
 RUN make -j4
 
 CMD ["lambda_function.lambda_handler"]
