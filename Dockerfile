@@ -12,7 +12,7 @@ RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-
 RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
 
 WORKDIR TVM_Lambda_Container
-RUN pip3 install --user -r requirements.txt
+RUN pip3 install -r requirements.txt
 RUN git clone -b v0.8 --recursive https://github.com/apache/tvm tvm
 # install packages
 RUN mkdir tvm/build
