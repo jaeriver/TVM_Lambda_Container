@@ -1,101 +1,127 @@
+import numpy as np
+import pickle
+import time
 import json
 import boto3
-import numpy as np
-from PIL import Image
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
-from tensorflow.keras.models import load_model
-import time
 
-bucket_name = 'imagenet-sample'
-bucket_ensemble = 'lambda-ensemble'
-model_name = 'mobilenet_v2'
-model_path = '/var/task/lambda-ensemble-sequence/mobilenet_v2/model/' + model_name
-model = load_model(model_path, compile=True)
-
-s3 = boto3.resource('s3')
-s3_client = boto3.client('s3')
-
-table_name = 'lambda-ensemble1'
-region_name = 'us-west-2'
-dynamodb = boto3.resource('dynamodb', region_name=region_name)
-table = dynamodb.Table(table_name)
+import tvm
+from tvm import relay
+from tvm.relay import testing
+from tvm.contrib import graph_runtime
+from tvm.contrib import graph_executor
+from tvm.contrib import utils
 
 
-def upload_s3(case_num, acc):
-    item_dict = dict([(str(i), str(acc[i])) for i in range(len(acc))])
-    s3_client.put_object(
-        Body=json.dumps(item_dict),
-        Bucket=bucket_ensemble,
-        Key=model_name + '_' + case_num + '.txt'
-    )
-    return True
+bucket_name = 'subin-tvm'
+folder_name = 'compiled_model/target-cpu'
 
+s3 = boto3.client('s3')
+ctx = tvm.cpu()
 
-def upload_dynamodb(case_num, acc):
-    item_dict = dict([(str(i), str(acc[i])) for i in range(len(acc))])
-    item_dict['model_name'] = model_name
-    item_dict['case_num'] = case_num
+def load_model(model,batch_size,arch):
+    filename = f'./model/{model}_{batch_size}_{arch}_deploy_lib.tar'
+    key = f'{folder_name}/{model}_deploy_lib.tar'
 
-    with table.batch_writer() as batch:
-        batch.put_item(Item=item_dict)
-    return True
+    s3.download_file(bucket_name,key,filename)
+    # 다운받은 모델 호출 => 경로 수정 필요해보임 
+    loaded_lib = tvm.runtime.load_module(f'./model/{model}_{batch_size}_{arch}_deploy_lib.tar')
 
+    module = graph_executor.GraphModule(loaded_lib["default"](ctx))
+    return module
 
-def read_image_from_s3(filename):
-    bucket = s3.Bucket(bucket_name)
-    object = bucket.Object(filename)
-    response = object.get()
-    file_stream = response['Body']
-    img = Image.open(file_stream)
-    img.convert('RGB')
-    return img
+def get_tvm_model(name, batch_size,image_shape,dtype="float32"):
+    output_shape = (batch_size, 1000)
+    mod=None
 
+    if name.startswith("resnet"):
+        n_layer = int(name.split("t")[1])
+        mod, params = relay.testing.resnet.get_workload(
+            num_layers=n_layer,
+            batch_size=batch_size,
+            dtype=dtype,
+            image_shape=image_shape,
+        )
+    elif name == "mobilenet":
+        mod, params = relay.testing.mobilenet.get_workload(
+            batch_size=batch_size, dtype=dtype, image_shape=image_shape)
+    elif name == "inception_v3":
+        # input_shape = (batch_size, 3, 299, 299) if layout == "NCHW" else (batch_size, 299, 299, 3)
+        mod, params = relay.testing.inception_v3.get_workload(batch_size=batch_size, dtype=dtype)
 
-def filenames_to_input(file_list):
-    imgs = []
-    for file in file_list:
-        img = read_image_from_s3(file)
-        img = img.resize((224, 224), Image.ANTIALIAS)
-        img = np.array(img)
-        # if image is grayscale, convert to 3 channels
-        if len(img.shape) != 3:
-            img = np.repeat(img[..., np.newaxis], 3, -1)
-        # batchsize, 224, 224, 3
-        img = img.reshape((1, img.shape[0], img.shape[1], img.shape[2]))
-        img = preprocess_input(img)
-        imgs.append(img)
+    return mod, params
 
-    batch_imgs = np.vstack(imgs)
-    return batch_imgs
+def build_model(model,batch_size,image_shape):
+    target = 'llvm'
 
+    mod,params = get_tvm_model(model,batch_size,image_shape)
 
-def inference_model(batch_imgs):
+    # build 
+    opt_level = 3
+    with relay.build_config(opt_level=opt_level):
+        graph, lib, params = relay.build_module.build(
+            mod, target, params=params)
+
+    # graph create 
+    module = graph_runtime.create(graph, lib, ctx)
+
+    #export model 
+    lib.export_library(f"./upload_model/{model}_{batch_size}_{target}_deploy_lib.tar")
+
+    # upload to s3 
+    filename = f"./upload_model/{model}_{batch_size}_{target}_deploy_lib.tar"
+    key = f'{folder_name}/{model}_{batch_size}_{target}_deploy_lib.tar'
+    res = s3.upload_file(filename,bucket_name,key)
+    
+    return module
+
+def make_random_data(batch_size,size):
+    image_shape = (3, size, size)
+    data_shape = (batch_size,) + image_shape
+
+    data = np.random.uniform(-1, 1, size=data_shape).astype("float32")
+
+    return data,image_shape
+
+def inference(module,input_data):
     pred_start = time.time()
-    result = model.predict(batch_imgs)
+    module.run(data=input_data)
     pred_time = time.time() - pred_start
+    
+    out_deploy = module.get_output(0).numpy()
 
-    result = np.round(result.astype(np.float64), 8)
-    result = result.tolist()
+    data_tvm = tvm.nd.array(input_data.astype('float32'))
+    e = module.module.time_evaluator("run", ctx, number=10, repeat=1)
+    t = e(data_tvm).results
+    t = np.array(t) * 1000
+    print('inference time : {} ms'.format( t.mean()))
 
-    return result, pred_time
+    return out_deploy,pred_time
 
 
 def lambda_handler(event, context):
-    file_list = event['file_list']
+    model = event['model']
     batch_size = event['batch_size']
-    case_num = event['case_num']
-    batch_imgs = filenames_to_input(file_list)
+    arch = event['arch']
+
+    if model == 'inception_v3':
+        input_data,image_shape = make_random_data(batch_size,299)
+    else:
+        input_data,image_shape = make_random_data(batch_size,224)
 
     total_start = time.time()
-    result, pred_time = inference_model(batch_imgs)
-    upload_s3(case_num, result)
+    #1. s3에서 model load 하는 경우, 즉 build 는 다른 인스턴스에서 진행하고 추론만 하고 싶을 때
+    #module = load_model(model,batch_size,arch)
+
+    #2. lambda에서 build와 inference 모두 다 진행하는 경우 
+    module = build_model(model,batch_size,image_shape)
+
+    result, pred_time = inference(module,input_data)
     total_time = time.time() - total_start
 
     return {
-        'file_list': file_list,
-        'model_name': model_name,
-        'case_num': case_num,
+        'model_name': model,
         'batch_size': batch_size,
+        'arch_info': arch,
         'total_time': total_time,
         'pred_time': pred_time,
     }
