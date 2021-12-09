@@ -5,3 +5,4 @@ tornado
 psutil
 xgboost
 cloudpickle
+boto3
