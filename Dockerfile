@@ -19,8 +19,7 @@ RUN mkdir tvm/build
 RUN cp config.cmake tvm/build
 RUN env CC=cc CXX=CC
 
-ENV TVM_HOME=/home/ec2-user/TVM_Lambda_Container/tvm
-ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
+
 
 WORKDIR tvm/build
 RUN cmake ..
@@ -29,4 +28,10 @@ RUN make -j3
 WORKDIR ../../
 
 RUN cp lambda_function.py /var/task/
+RUN cp -r tvm /var/task/tvm
+RUN rm -rf tvm
+
+ENV TVM_HOME=/var/task/TVM_Lambda_Container/tvm
+ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
+
 CMD ["lambda_function.lambda_handler"]
