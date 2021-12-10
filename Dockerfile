@@ -29,10 +29,8 @@ WORKDIR ../../
 
 RUN cp lambda_function.py /var/task/
 
-ENV TVM_HOME /home/ec2-user/TVM_Lambda_Container/tvm
-ENV PYTHONPATH $TVM_HOME/python:${PYTHONPATH}
+ENV TVM_HOME="~/TVM_Lambda_Container/tvm"
+ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
-RUN export TVM_HOME=/var/task/TVM_Lambda_Container/tvm
-RUN export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 CMD ["lambda_function.lambda_handler"]
