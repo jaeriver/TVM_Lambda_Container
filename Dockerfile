@@ -28,10 +28,8 @@ RUN make -j3
 WORKDIR ../../
 
 RUN cp lambda_function.py /var/task/
-RUN cp -r tvm /var/task/tvm
-RUN rm -rf tvm
 
-ENV TVM_HOME /var/task/TVM_Lambda_Container/tvm
+ENV TVM_HOME /home/ec2-user/TVM_Lambda_Container/tvm
 ENV PYTHONPATH $TVM_HOME/python:${PYTHONPATH}
 
 RUN export TVM_HOME=/var/task/TVM_Lambda_Container/tvm
