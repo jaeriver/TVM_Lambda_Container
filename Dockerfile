@@ -34,4 +34,7 @@ RUN rm -rf tvm
 ENV TVM_HOME=/var/task/TVM_Lambda_Container/tvm
 ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
+RUN export TVM_HOME=/var/task/TVM_Lambda_Container/tvm
+RUN export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
+
 CMD ["lambda_function.lambda_handler"]
