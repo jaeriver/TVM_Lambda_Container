@@ -29,7 +29,7 @@ WORKDIR ../../
 
 RUN cp lambda_function.py /var/task/
 
-RUN env TVM_HOME=/tmp/TVM_Lambda_Container/tvm
+RUN env TVM_HOME=/home/ec2-user/TVM_Lambda_Container/tvm
 RUN env PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 
