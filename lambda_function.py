@@ -4,6 +4,8 @@ import time
 import json
 import boto3
 import os
+os.system('export TVM_HOME=/home/ec2-user/TVM_Lambda_Container/tvm')
+os.system('export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}')
 
 import tvm
 from tvm import relay
@@ -100,8 +102,6 @@ def inference(module,input_data):
 
 
 def lambda_handler(event, context):
-    os.system('export TVM_HOME=/home/ec2-user/TVM_Lambda_Container/tvm')
-    os.system('export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}')
     model = event['model']
     batch_size = event['batch_size']
     arch = event['arch']
