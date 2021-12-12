@@ -8,8 +8,8 @@ RUN yum -y update
 RUN yum -y install cmake3 gcc gcc-c++ make && ln -s /usr/bin/cmake3 /usr/bin/cmake
 RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-essential libedit-dev llvm llvm-devel libxml2-dev git tar wget gcc gcc-c++
 
+RUN echo ${PWD}
 # git clone
-WORKDIR /tmp
 RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
 
 WORKDIR TVM_Lambda_Container
@@ -29,7 +29,7 @@ WORKDIR ../../
 
 RUN cp lambda_function.py /var/task/
 
-ENV TVM_HOME=/tmp/TVM_Lambda_Container/tvm
+ENV TVM_HOME=${PWD}/TVM_Lambda_Container/tvm
 ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 CMD ["lambda_function.lambda_handler"]
