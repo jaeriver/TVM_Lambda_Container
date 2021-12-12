@@ -9,7 +9,7 @@ RUN yum -y install cmake3 gcc gcc-c++ make && ln -s /usr/bin/cmake3 /usr/bin/cma
 RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-essential libedit-dev llvm llvm-devel libxml2-dev git tar wget gcc gcc-c++
 
 # git clone
-WORKDIR /var/task/
+WORKDIR /tmp
 RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
 
 WORKDIR TVM_Lambda_Container
