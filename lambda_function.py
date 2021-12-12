@@ -4,7 +4,7 @@ import time
 import json
 import boto3
 import os
-os.system('export TVM_HOME=/home/ec2-user/TVM_Lambda_Container/tvm')
+os.system('export TVM_HOME=/var/task/TVM_Lambda_Container/tvm')
 os.system('export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}')
 
 import tvm
