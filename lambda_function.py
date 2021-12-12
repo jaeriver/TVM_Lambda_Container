@@ -4,8 +4,9 @@ import time
 import json
 import boto3
 import os
-os.system('export TVM_HOME=/var/task/TVM_Lambda_Container/tvm')
-os.system('export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}')
+
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 
 import tvm
 from tvm import relay
