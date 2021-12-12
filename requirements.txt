@@ -6,3 +6,4 @@ psutil
 xgboost
 cloudpickle
 boto3
+pytest
