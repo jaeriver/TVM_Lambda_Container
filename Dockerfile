@@ -1,7 +1,6 @@
 FROM amazon/aws-lambda-python:3.8
 
-ENV TVM_HOME=${PWD}/TVM_Lambda_Container/tvm
-ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
+
 # # optional : ensure that pip is up to data
 # RUN /var/lang/bin/python3.8 -m pip install --upgrade pip
 
@@ -14,8 +13,12 @@ RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-
 RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
 
 WORKDIR TVM_Lambda_Container
-RUN pip3 install -r requirements.txt
+
 RUN git clone -b v0.8 --recursive https://github.com/apache/tvm tvm
+ENV TVM_HOME=${PWD}/TVM_Lambda_Container/tvm
+ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
+
+RUN pip3 install -r requirements.txt
 
 # install packages
 RUN mkdir tvm/build
