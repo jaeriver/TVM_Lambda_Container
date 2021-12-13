@@ -4,9 +4,12 @@ import time
 import json
 import boto3
 import os
+from os.path import join, dirname
 
 from dotenv import load_dotenv, find_dotenv
-load_dotenv(find_dotenv())
+
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
 
 import tvm
 from tvm import relay
