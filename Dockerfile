@@ -27,6 +27,8 @@ WORKDIR tvm/build
 RUN cmake ..
 RUN make -j3
 
+WORKDIR ../
+RUN rm -rf .git/
 
 RUN cp /var/task/TVM_Lambda_Container/lambda_function.py /var/task/
 
