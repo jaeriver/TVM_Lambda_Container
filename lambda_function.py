@@ -6,7 +6,7 @@ import boto3
 import os
 from os.path import join, dirname
 
-os.system('cp -r /var/task/TVM_Lambda_Container/tvm /tmp/')
+os.system('cp -r /var/task/tvm /tmp/')
 
 from dotenv import load_dotenv, find_dotenv
 
