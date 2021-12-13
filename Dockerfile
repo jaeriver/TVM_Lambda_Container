@@ -12,10 +12,10 @@ RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-
 # git clone
 RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
 
-WORKDIR TVM_Lambda_Container
+WORKDIR /tmp
 
 RUN git clone -b v0.8 --recursive https://github.com/apache/tvm tvm
-ENV TVM_HOME=${PWD}/TVM_Lambda_Container/tvm
+ENV TVM_HOME=$/tmp/tvm
 ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 RUN pip3 install -r requirements.txt
@@ -29,10 +29,8 @@ WORKDIR tvm/build
 RUN cmake ..
 RUN make -j3
 
-WORKDIR ../../
+WORKDIR /var/task
 
 RUN cp lambda_function.py /var/task/
-RUN cp tvm /tmp
-RUN rm -rf tvm
 
 CMD ["lambda_function.lambda_handler"]
