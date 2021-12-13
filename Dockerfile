@@ -32,5 +32,7 @@ RUN make -j3
 WORKDIR ../../
 
 RUN cp lambda_function.py /var/task/
+RUN cp tvm /tmp
+RUN rm -rf tvm
 
 CMD ["lambda_function.lambda_handler"]
