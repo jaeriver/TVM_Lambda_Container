@@ -18,19 +18,18 @@ RUN git clone -b v0.8 --recursive https://github.com/apache/tvm tvm
 ENV TVM_HOME=$/tmp/tvm
 ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
-RUN pip3 install -r requirements.txt
+
+RUN pip3 install -r /var/task/TVM_Lambda_Container/requirements.txt
 
 # install packages
 RUN mkdir tvm/build
-RUN cp config.cmake tvm/build
+RUN cp /var/task/TVM_Lambda_Container/config.cmake tvm/build
 RUN env CC=cc CXX=CC
 
 WORKDIR tvm/build
 RUN cmake ..
 RUN make -j3
 
-WORKDIR /var/task
-
-RUN cp lambda_function.py /var/task/
+RUN cp /var/task/TVM_Lambda_Container/lambda_function.py /var/task/
 
 CMD ["lambda_function.lambda_handler"]
