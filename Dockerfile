@@ -1,7 +1,9 @@
 FROM amazon/aws-lambda-python:3.8
 
-# optional : ensure that pip is up to data
-RUN /var/lang/bin/python3.8 -m pip install --upgrade pip
+ENV TVM_HOME=${PWD}/TVM_Lambda_Container/tvm
+ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
+# # optional : ensure that pip is up to data
+# RUN /var/lang/bin/python3.8 -m pip install --upgrade pip
 
 # install essential library
 RUN yum -y update
@@ -27,8 +29,5 @@ RUN make -j3
 WORKDIR ../../
 
 RUN cp lambda_function.py /var/task/
-
-ENV TVM_HOME=${PWD}/TVM_Lambda_Container/tvm
-ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 CMD ["lambda_function.lambda_handler"]
