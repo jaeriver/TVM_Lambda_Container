@@ -8,7 +8,7 @@ from os.path import join, dirname
 
 os.system('cp -r /var/task/tvm /tmp/')
 os.system('export TVM_HOME=/tmp/tvm')
-os.system('export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
+os.system('export PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}')
           
 from dotenv import load_dotenv, find_dotenv
 
