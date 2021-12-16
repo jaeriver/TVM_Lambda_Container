@@ -25,7 +25,8 @@ RUN env CC=cc CXX=CC
 WORKDIR tvm/build
 RUN cmake ..
 RUN make -j3
-WORKDIR tvm/python
+
+WORKDIR ../python
 RUN python setup.py install --user
 WORKDIR ../../
 RUN rm -rf .git/
