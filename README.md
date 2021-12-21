@@ -1,3 +1,4 @@
+### Push docker image to AWS ECR
 ```
 docker build -t tvm_lambda_container . --no-cache
 
