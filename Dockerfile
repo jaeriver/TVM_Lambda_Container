@@ -37,4 +37,5 @@ RUN rm -rf .git/
 
 RUN cp /var/task/TVM_Lambda_Container/lambda_function.py /var/task/
 
+ENTRYPOINT ["/lambda-entrypoint.sh"]
 CMD ["lambda_function.lambda_handler"]
