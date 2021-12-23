@@ -13,7 +13,6 @@ RUN git clone -b v0.8 --recursive https://github.com/apache/tvm tvm
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh && sh Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
 RUN cp tvm/conda/build-environment.yaml /tmp/build-environment.yaml
 RUN /opt/miniconda/bin/conda env create --file /tmp/build-environment.yaml --prefix /opt/conda-env
-RUN /opt/conda-env/bin/pip install awslambdaric
 RUN mv /var/lang/bin/python3.8 /var/lang/bin/python3.8-clean && ln -sf /opt/conda-env/bin/python /var/lang/bin/python3.8
 
 
@@ -37,5 +36,4 @@ RUN rm -rf .git/
 
 RUN cp /var/task/TVM_Lambda_Container/lambda_function.py /var/task/
 
-ENTRYPOINT ["/lambda-entrypoint.sh"]
 CMD ["lambda_function.lambda_handler"]
