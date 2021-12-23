@@ -1,18 +1,19 @@
 FROM amazon/aws-lambda-python:3.8
 
-
-# # optional : ensure that pip is up to data
-# RUN /var/lang/bin/python3.8 -m pip install --upgrade pip
-
 # install essential library
-RUN yum -y update
+RUN yum update && yum install -y wget && yum clean all
 RUN yum -y install cmake3 gcc gcc-c++ make && ln -s /usr/bin/cmake3 /usr/bin/cmake
 RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-essential libedit-dev llvm llvm-devel libxml2-dev git tar wget gcc gcc-c++
 
 # git clone
 RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
-
 RUN git clone -b v0.8 --recursive https://github.com/apache/tvm tvm
+
+# setup anaconda
+# RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh && sh Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
+# COPY tvm/conda/build-environment.yaml /tmp/build-environment.yaml
+# RUN /opt/miniconda/bin/conda env create --file /tmp/build-environment.yaml --prefix /opt/conda-env
+
 
 
 RUN pip3 install -r /var/task/TVM_Lambda_Container/requirements.txt
