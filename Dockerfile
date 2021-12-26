@@ -29,9 +29,9 @@ RUN make -j3
 
 ENV TVM_HOME=/var/task/tvm
 ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
-# WORKDIR ../python
-# RUN python setup.py install --user
-# WORKDIR ../../
+WORKDIR ../python
+RUN python setup.py install --user
+WORKDIR ../../
 RUN rm -rf .git/
 
 RUN cp /var/task/TVM_Lambda_Container/lambda_function.py /var/task/
