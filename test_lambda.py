@@ -134,7 +134,7 @@ if __name__ =="__main__":
   context =""
   event= {
   "model": "mobilenet",
-  "batch_size": 8,
+  "batch_size": 16,
   "arch": "llvm"
   }
   print(lambda_handler(event,context))
