@@ -27,7 +27,7 @@ RUN env CC=cc CXX=CC
 # RUN cmake ..
 # RUN make -j3
 
-# ENV PYTHONPATH "/var/lang/lib/python3.8/site-packages:/var/task"
+ENV PYTHONPATH "/var/lang/lib/python3.8/site-packages:/var/task"
 ENV TVM_HOME=/mnt/efs/tvm
 ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
