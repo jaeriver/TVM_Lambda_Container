@@ -28,13 +28,12 @@ RUN env CC=cc CXX=CC
 # RUN make -j3
 
 # ENV PYTHONPATH "/var/lang/lib/python3.8/site-packages:/var/task"
-
+ENV LAMBDA_TASK_ROOT=/tmp
 ENV TVM_HOME=/mnt/efs/tvm
 ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 # WORKDIR ../../
 
-RUN cp /var/task/TVM_Lambda_Container/lambda_function.py /var/task/
+RUN cp /var/task/TVM_Lambda_Container/lambda_function.py ${LAMBDA_TASK_ROOT}
 
-# ENTRYPOINT ["/lambda-entrypoint.sh"]
 CMD ["lambda_function.lambda_handler"]
