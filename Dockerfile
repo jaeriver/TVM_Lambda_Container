@@ -34,7 +34,5 @@ ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 # WORKDIR ../../
 
 RUN cp /var/task/TVM_Lambda_Container/lambda_function.py ${LAMBDA_TASK_ROOT}
-RUN cp /var/task/TVM_Lambda_Container/lambda_function.py /tmp
-RUN python3 /tmp/lambda_function.py
 
 CMD ["lambda_function.lambda_handler"]
