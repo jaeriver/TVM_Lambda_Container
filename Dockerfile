@@ -16,7 +16,7 @@ RUN /opt/miniconda/bin/conda env create --file /tmp/build-environment.yaml --pre
 RUN mv /var/lang/bin/python3.8 /var/lang/bin/python3.8-clean && ln -sf /opt/conda-env/bin/python /var/lang/bin/python3.8
 
 
-RUN pip3 install -r /var/task/TVM_Lambda_Container/requirements.txt
+RUN pip install -r /var/task/TVM_Lambda_Container/requirements.txt
 
 # install packages
 # RUN mkdir tvm/build
