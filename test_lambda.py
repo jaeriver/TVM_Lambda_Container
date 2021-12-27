@@ -112,10 +112,10 @@ def lambda_handler(event, context):
 
     total_start = time.time()
     #1. s3에서 model load 하는 경우, 즉 build 는 다른 인스턴스에서 진행하고 추론만 하고 싶을 때
-    #module = load_model(model,batch_size,arch)
+    module = load_model(model,batch_size,arch)
 
     #2. lambda에서 build와 inference 모두 다 진행하는 경우 
-    module = build_model(model,batch_size,image_shape)
+#     module = build_model(model,batch_size,image_shape)
 
     result, pred_time = inference(module,input_data)
     total_time = time.time() - total_start
