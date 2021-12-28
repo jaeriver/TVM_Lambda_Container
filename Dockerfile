@@ -7,16 +7,16 @@ RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-
 
 # git clone
 RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
-RUN git clone -b v0.8 --recursive https://github.com/apache/tvm tvm
+# RUN git clone -b v0.8 --recursive https://github.com/apache/tvm tvm
 
 # setup anaconda
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh && sh Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
-RUN cp tvm/conda/build-environment.yaml /tmp/build-environment.yaml
-RUN /opt/miniconda/bin/conda env create --file /tmp/build-environment.yaml --prefix /opt/conda-env
-RUN mv /var/lang/bin/python3.8 /var/lang/bin/python3.8-clean && ln -sf /opt/conda-env/bin/python /var/lang/bin/python3.8
+# RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh && sh Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
+# RUN cp tvm/conda/build-environment.yaml /tmp/build-environment.yaml
+# RUN /opt/miniconda/bin/conda env create --file /tmp/build-environment.yaml --prefix /opt/conda-env
+# RUN mv /var/lang/bin/python3.8 /var/lang/bin/python3.8-clean && ln -sf /opt/conda-env/bin/python /var/lang/bin/python3.8
 
 
-RUN pip install -r /var/task/TVM_Lambda_Container/requirements.txt
+RUN pip3 install -r /var/task/TVM_Lambda_Container/requirements.txt
 
 # install packages
 # RUN mkdir tvm/build
@@ -27,12 +27,12 @@ RUN env CC=cc CXX=CC
 # RUN cmake ..
 # RUN make -j3
 
-ENV PYTHONPATH "/var/lang/lib/python3.8/site-packages:/var/task"
+# ENV PYTHONPATH "/var/lang/lib/python3.8/site-packages:/var/task"
 ENV TVM_HOME=/mnt/efs/tvm
 ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 
 # WORKDIR ../../
 
 RUN cp /var/task/TVM_Lambda_Container/lambda_function.py ${LAMBDA_TASK_ROOT}
-ENTRYPOINT ["/lambda-entrypoint.sh"]
+# ENTRYPOINT ["/lambda-entrypoint.sh"]
 CMD ["lambda_function.lambda_handler"]
