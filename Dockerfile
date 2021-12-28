@@ -30,6 +30,7 @@ RUN env CC=cc CXX=CC
 # ENV PYTHONPATH "/var/lang/lib/python3.8/site-packages:/var/task"
 ENV TVM_HOME=/mnt/efs/tvm
 ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
+ENV LD_LIBRARY_PATH=/mnt/efs/tvm
 
 # WORKDIR ../../
 
