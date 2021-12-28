@@ -1,5 +1,6 @@
 import os
 os.chdir("/tmp")
+os.environ['LD_LIBRARY_PATH'] = '/mnt/efs/tvm:' + os.environ['LD_LIBRARY_PATH']
 import numpy as np
 from tvm import relay
 from tvm.relay import testing
