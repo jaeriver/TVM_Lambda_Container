@@ -1,4 +1,4 @@
-FROM amazon/aws-lambda-python:3.8
+# FROM amazon/aws-lambda-python:3.8
 
 # install essential library
 RUN yum update && yum install -y wget && yum clean all
@@ -15,8 +15,13 @@ RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
 # RUN /opt/miniconda/bin/conda env create --file /tmp/build-environment.yaml --prefix /opt/conda-env
 # RUN mv /var/lang/bin/python3.8 /var/lang/bin/python3.8-clean && ln -sf /opt/conda-env/bin/python /var/lang/bin/python3.8
 
+# ENV PYTHONPATH "/var/lang/lib/python3.8/site-packages:/var/task"
+ENV TVM_HOME=/mnt/efs/tvm
+ENV PATH=$PATH:$TVM_HOME/bin
+ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
+ENV PATH=$TVM_HOME/python:$PATH
 
-RUN pip3 install -r /var/task/TVM_Lambda_Container/requirements.txt
+RUN pip install -r /var/task/TVM_Lambda_Container/requirements.txt
 
 # install packages
 # RUN mkdir tvm/build
@@ -27,11 +32,7 @@ RUN env CC=cc CXX=CC
 # RUN cmake ..
 # RUN make -j3
 
-# ENV PYTHONPATH "/var/lang/lib/python3.8/site-packages:/var/task"
-ENV TVM_HOME=/mnt/efs/tvm
-ENV PATH=$PATH:$TVM_HOME/bin
-ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
-ENV PATH=$TVM_HOME/python:$PATH
+
 # WORKDIR ../../
 
 RUN cp /var/task/TVM_Lambda_Container/lambda_function.py ${LAMBDA_TASK_ROOT}
