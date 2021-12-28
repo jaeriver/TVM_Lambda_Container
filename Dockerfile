@@ -29,9 +29,9 @@ RUN env CC=cc CXX=CC
 
 # ENV PYTHONPATH "/var/lang/lib/python3.8/site-packages:/var/task"
 ENV TVM_HOME=/mnt/efs/tvm
+ENV PATH=$PATH:$TVM_HOME/bin
 ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
-ENV LD_LIBRARY_PATH=/mnt/efs/tvm
-
+ENV PATH=$TVM_HOME/python:$PATH
 # WORKDIR ../../
 
 RUN cp /var/task/TVM_Lambda_Container/lambda_function.py ${LAMBDA_TASK_ROOT}
