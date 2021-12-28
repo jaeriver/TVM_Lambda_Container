@@ -1,4 +1,4 @@
-# FROM amazon/aws-lambda-python:3.8
+FROM amazon/aws-lambda-python:3.8
 
 # install essential library
 RUN yum update && yum install -y wget && yum clean all
