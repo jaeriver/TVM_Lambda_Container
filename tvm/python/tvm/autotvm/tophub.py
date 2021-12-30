@@ -43,7 +43,7 @@ AUTOTVM_TOPHUB_DEFAULT_LOC = "https://raw.githubusercontent.com/tlc-pack/tophub/
 AUTOTVM_TOPHUB_NONE_LOC = "NONE"
 
 # root path to store TopHub files
-AUTOTVM_TOPHUB_ROOT_PATH = Path(Path("/mnt/efs/TVM_Lambda_Container/tvm").expanduser(), ".tvm", "tophub")
+AUTOTVM_TOPHUB_ROOT_PATH = Path(Path("/tmp").expanduser(), ".tvm", "tophub")
 
 # the version of each package
 PACKAGE_VERSION = {
