@@ -132,7 +132,7 @@ def download(url, path, overwrite=False, size_compare=False, retries=3):
 if "TEST_DATA_ROOT_PATH" in os.environ:
     TEST_DATA_ROOT_PATH = Path(os.environ.get("TEST_DATA_ROOT_PATH"))
 else:
-    TEST_DATA_ROOT_PATH = Path(Path("/mnt/efs/TVM_Lambda_Container/tvm").expanduser(), ".tvm_test_data")
+    TEST_DATA_ROOT_PATH = Path(Path("/tmp").expanduser(), ".tvm_test_data")
 TEST_DATA_ROOT_PATH.mkdir(parents=True, exist_ok=True)
 
 
