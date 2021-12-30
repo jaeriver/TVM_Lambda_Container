@@ -42,7 +42,7 @@ class Cache(object):
     cache_by_key = {}
 
     def __init__(self, key, save_at_exit):
-        cache_dir = ".pkl_memoize_py{0}".format(sys.version_info[0])
+        cache_dir = "/tmp/pkl_memoize_py{0}".format(sys.version_info[0])
         try:
             os.mkdir(cache_dir)
         except FileExistsError:
