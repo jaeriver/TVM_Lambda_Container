@@ -76,7 +76,7 @@ def download(url, path, overwrite=False, size_compare=False, retries=3):
     # Stateful start time
     start_time = time.time()
     dirpath = path.parent
-#     dirpath.mkdir(parents=True, exist_ok=True)
+    dirpath.mkdir(parents=True, exist_ok=True)
 
     def _download_progress(count, block_size, total_size):
         # pylint: disable=unused-argument
@@ -132,8 +132,8 @@ def download(url, path, overwrite=False, size_compare=False, retries=3):
 if "TEST_DATA_ROOT_PATH" in os.environ:
     TEST_DATA_ROOT_PATH = Path(os.environ.get("TEST_DATA_ROOT_PATH"))
 else:
-    TEST_DATA_ROOT_PATH = Path(Path("~").expanduser(), ".tvm_test_data")
-# TEST_DATA_ROOT_PATH.mkdir(parents=True, exist_ok=True)
+    TEST_DATA_ROOT_PATH = Path(Path("/mnt/efs/TVM_Lambda_Container/tvm").expanduser(), ".tvm_test_data")
+TEST_DATA_ROOT_PATH.mkdir(parents=True, exist_ok=True)
 
 
 def download_testdata(url, relpath, module=None, overwrite=False):
