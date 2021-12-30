@@ -106,12 +106,12 @@ def lambda_handler(event,context):
     batch_size = 16
     size=224
     data,image_shape = make_dataset(batch_size,size)
-    test_resnet(data,batch_size,image_shape)
+#     test_resnet(data,batch_size,image_shape)
     test_mobilenet(data,batch_size,image_shape)
 
-    inception_size=299
-    inception_data,inception_image_shape=make_dataset(batch_size,inception_size)
-    test_inception(inception_data,batch_size,inception_image_shape)
+#     inception_size=299
+#     inception_data,inception_image_shape=make_dataset(batch_size,inception_size)
+#     test_inception(inception_data,batch_size,inception_image_shape)
 if __name__ == "__main__":
     event = ""
     context = ""
