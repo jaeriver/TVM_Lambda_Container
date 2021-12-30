@@ -8,9 +8,9 @@ import time
 import pickle
 from tvm.contrib import utils
 from tvm.contrib import graph_runtime
-from tvm.relay.testing import resnet
+# from tvm.relay.testing import resnet
 from tvm.relay.testing import mobilenet
-from tvm.relay.testing import inception_v3
+# from tvm.relay.testing import inception_v3
 
 target = 'llvm'
 ctx = tvm.cpu()
@@ -70,7 +70,7 @@ def test_mobilenet(data,batch_size,image_shape):
     module.set_input(**params)
     module.run()
     out = module.get_output(0).asnumpy()
-    lib.export_library(f"./mobilenet_{batch_size}_{target}_deploy_lib.tar")
+    lib.export_library(f"/tmp/mobilenet_{batch_size}_{target}_deploy_lib.tar")
 
     data_tvm = tvm.nd.array(data.astype('float32'))
     e = module.module.time_evaluator("run", ctx, number=5, repeat=1)
@@ -103,12 +103,13 @@ def test_inception(data,batch_size,image_shape):
     print('{} (batch={}): {} ms'.format('inceptionV3', batch_size, t.mean()))
 
 def lambda_handler(event,context):
-    batch_size = 16
+    batch_size = 4
     size=224
     data,image_shape = make_dataset(batch_size,size)
-    test_resnet(data,batch_size,image_shape)
+#     test_resnet(data,batch_size,image_shape)
+    print('start mobilenet')
     test_mobilenet(data,batch_size,image_shape)
 
-    inception_size=299
-    inception_data,inception_image_shape=make_dataset(batch_size,inception_size)
-    test_inception(inception_data,batch_size,inception_image_shape)
+#     inception_size=299
+#     inception_data,inception_image_shape=make_dataset(batch_size,inception_size)
+#     test_inception(inception_data,batch_size,inception_image_shape)
