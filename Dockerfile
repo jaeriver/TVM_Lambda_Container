@@ -16,7 +16,7 @@ RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
 # RUN mv /var/lang/bin/python3.8 /var/lang/bin/python3.8-clean && ln -sf /opt/conda-env/bin/python /var/lang/bin/python3.8
 
 # ENV PYTHONPATH "/var/lang/lib/python3.8/site-packages:/var/task"
-ENV TVM_HOME=/mnt/efs/tvm
+ENV TVM_HOME=/mnt/efs/TVM_Lambda_Container/tvm
 ENV PATH=$PATH:$TVM_HOME/bin
 ENV PYTHONPATH=$TVM_HOME/python:${PYTHONPATH}
 ENV PATH=$TVM_HOME/python:$PATH
