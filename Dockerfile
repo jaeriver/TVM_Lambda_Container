@@ -24,6 +24,7 @@ ENV PATH=$TVM_HOME/python:$PATH
 RUN pip3 install -r /var/task/TVM_Lambda_Container/requirements.txt
 
 # install packages
+WORKDIR TVM_Lambda_Container
 RUN mkdir tvm/build
 RUN cp /var/task/TVM_Lambda_Container/config.cmake tvm/build
 RUN env CC=cc CXX=CC
