@@ -1,16 +1,17 @@
+import time
 import os
 import numpy as np
+import_start_time = time.time()
 from tvm import relay
 from tvm.relay import testing
 import tvm
-import time
-
 import pickle
 from tvm.contrib import utils
 from tvm.contrib import graph_runtime
 # from tvm.relay.testing import resnet
 from tvm.relay.testing import mobilenet
 # from tvm.relay.testing import inception_v3
+print('import time: ', time.time() - import_start_time)
 
 target = 'llvm'
 ctx = tvm.cpu()
@@ -102,10 +103,10 @@ def test_inception(data,batch_size,image_shape):
     t = np.array(t) * 1000
     print('{} (batch={}): {} ms'.format('inceptionV3', batch_size, t.mean()))
 
-def lambda_handler(event,context):
-    batch_size = 4
+def lambda_handler(event, context):
+    batch_size = event['batch_size']
     size=224
-    data,image_shape = make_dataset(batch_size,size)
+    data, image_shape = make_dataset(batch_size,size)
 #     test_resnet(data,batch_size,image_shape)
     print('start mobilenet')
     test_mobilenet(data,batch_size,image_shape)
