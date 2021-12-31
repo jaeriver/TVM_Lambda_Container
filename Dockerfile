@@ -6,7 +6,7 @@ RUN yum -y install cmake3 gcc gcc-c++ make && ln -s /usr/bin/cmake3 /usr/bin/cma
 RUN yum -y install python3-dev python3-setuptools libtinfo-dev zlib1g-dev build-essential libedit-dev llvm llvm-devel libxml2-dev git tar wget gcc gcc-c++
 
 # git clone
-RUN git clone https://github.com/manchann/TVM_Lambda_Container.git
+RUN git clone https://github.com/jaeriver/TVM_Lambda_Container.git
 # RUN git clone -b v0.8 --recursive https://github.com/apache/tvm tvm
 
 # setup anaconda
