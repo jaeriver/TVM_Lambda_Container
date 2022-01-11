@@ -1,20 +1,22 @@
 import time
-import os
-import numpy as np
+import itertools
+import tensorflow as tf
 import_start_time = time.time()
 from tvm import relay
-from tvm.relay import testing
-import tvm
-import pickle
-from tvm.contrib import utils
-from tvm.contrib import graph_runtime
-# from tvm.relay.testing import resnet
-from tvm.relay.testing import mobilenet
-# from tvm.relay.testing import inception_v3
+import numpy as np 
+import tvm 
+from tvm.contrib import graph_executor
+import tvm.relay.testing.tf as tf_testing
+
+import tvm.testing 
+from tvm.runtime.vm import VirtualMachine
 print('import time: ', time.time() - import_start_time)
 
-target = 'llvm'
-ctx = tvm.cpu()
+model_name = 'resnet50'
+batch_size = '1'
+size = '224'
+arch_type = 'intel'
+
 
 def make_dataset(batch_size,size):
     image_shape = (3, size, size)
@@ -86,18 +88,13 @@ _out = vm.invoke("main",data)
 
 input_data = tvm.nd.array(data)
 
-for i in range(warm_iterations):    # warm up
-    vm.run(input_data)
-
 
 def lambda_handler(event, context):
     batch_size = event['batch_size']
     size=224
     data, image_shape = make_dataset(batch_size,size)
-#     test_resnet(data,batch_size,image_shape)
-    print('start mobilenet')
-    test_mobilenet(data,batch_size,image_shape)
-
-start_time = time.time()
-vm.run(input_data)
-print(f"VM {model_name}-{batch_size} inference latency : ",(time.time()-start_time)*1000,"ms")
+    start_time = time.time()
+    vm.run(input_data)
+    print(f"VM {model_name}-{batch_size} inference latency : ",(time.time()-start_time)*1000,"ms")
+    
+    return model_name
