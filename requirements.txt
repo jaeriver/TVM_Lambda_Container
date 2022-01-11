@@ -8,3 +8,4 @@ cloudpickle
 boto3
 pytest
 python-dotenv
+tensorflow
