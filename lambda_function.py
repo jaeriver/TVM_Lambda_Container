@@ -90,11 +90,13 @@ input_data = tvm.nd.array(data)
 
 
 def lambda_handler(event, context):
+    count = event['count']
     batch_size = event['batch_size']
     size=224
     data, image_shape = make_dataset(batch_size,size)
-    start_time = time.time()
-    vm.run(input_data)
-    print(f"VM {model_name}-{batch_size} inference latency : ",(time.time()-start_time)*1000,"ms")
+    for i in range(count):
+        start_time = time.time()
+        vm.run(input_data)
+        print(f"VM {model_name}-{batch_size} inference latency : ",(time.time()-start_time)*1000,"ms")
     
     return model_name
