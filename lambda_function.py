@@ -88,7 +88,7 @@ def lambda_handler(event, context):
     batch_size = event['batch_size']
     size=224
     data, image_shape = make_dataset(batch_size,size)
-    print("-"*10,"Graph Executor RUN,"-"*10)
+    print("-"*10,"Graph Executor RUN","-"*10)
     from tvm.contrib import graph_executor
     m = graph_executor.create(graph, lib, ctx)
     m.set_input(**params)
