@@ -13,8 +13,8 @@ from tvm.runtime.vm import VirtualMachine
 print('import time: ', time.time() - import_start_time)
 
 model_name = 'resnet50'
-batch_size = '1'
-size = '224'
+batch_size = 1
+size = 224
 arch_type = 'intel'
 
 
