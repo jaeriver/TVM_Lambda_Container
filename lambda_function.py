@@ -13,8 +13,6 @@ from tvm.runtime.vm import VirtualMachine
 print('import time: ', time.time() - import_start_time)
 
 model_name = 'resnet50'
-batch_size = 1
-size = 224
 arch_type = 'intel'
 
 
@@ -55,38 +53,7 @@ frozen_func = wrap_frozen_graph(graph_def=graph_def,
                                     outputs=["Identity:0"],
                                     print_graph=True)
 
-# test dataset 생성 
-data, image_shape = make_dataset(batch_size,size)
 
-print(data.shape)
-shape_dict = {"DecodeJpeg/contents": data.shape}
-
-##### Convert tensorflow model 
-mod, params = relay.frontend.from_tensorflow(graph_def, layout=None, shape=shape_dict)
-print("Tensorflow protobuf imported to relay frontend.")
-print("-"*10,"Load frozen model",time.time()-load_model,"s","-"*10)
-
-if arch_type == "intel":
-    target = "llvm"
-else:
-    target = tvm.target.arm_cpu()
-
-ctx = tvm.cpu()
-
-print("-"*10,"Compile style : create_executor vm ","-"*10)
-build_time = time.time()
-with tvm.transform.PassContext(opt_level=3):
-    # executor = relay.build_module.create_executor("vm", mod, tvm.cpu(0), target)
-    mod = relay.transform.InferType()(mod)
-    executor = relay.vm.compile(mod, target=target, params=params)
-
-print("-"*10,"Build latency : ",time.time()-build_time,"s","-"*10)
-
-# executor.evaluate()(data,**params)
-vm = VirtualMachine(executor,ctx)
-_out = vm.invoke("main",data)
-
-input_data = tvm.nd.array(data)
 
 
 def lambda_handler(event, context):
@@ -94,9 +61,46 @@ def lambda_handler(event, context):
     batch_size = event['batch_size']
     size=224
     data, image_shape = make_dataset(batch_size,size)
+    
+    # test dataset 생성 
+    data, image_shape = make_dataset(batch_size,size)
+
+    print(data.shape)
+    shape_dict = {"DecodeJpeg/contents": data.shape}
+
+    ##### Convert tensorflow model 
+    mod, params = relay.frontend.from_tensorflow(graph_def, layout=None, shape=shape_dict)
+    print("Tensorflow protobuf imported to relay frontend.")
+    print("-"*10,"Load frozen model",time.time()-load_model,"s","-"*10)
+
+    if arch_type == "intel":
+        target = "llvm"
+    else:
+        target = tvm.target.arm_cpu()
+
+    ctx = tvm.cpu()
+
+    print("-"*10,"Compile style : create_executor vm ","-"*10)
+    build_time = time.time()
+    with tvm.transform.PassContext(opt_level=3):
+        # executor = relay.build_module.create_executor("vm", mod, tvm.cpu(0), target)
+        mod = relay.transform.InferType()(mod)
+        executor = relay.vm.compile(mod, target=target, params=params)
+
+    print("-"*10,"Build latency : ",time.time()-build_time,"s","-"*10)
+
+    # executor.evaluate()(data,**params)
+    vm = VirtualMachine(executor,ctx)
+    _out = vm.invoke("main",data)
+
+    input_data = tvm.nd.array(data)
+    
+    time_lst = []
     for i in range(count):
         start_time = time.time()
         vm.run(input_data)
-        print(f"VM {model_name}-{batch_size} inference latency : ",(time.time()-start_time)*1000,"ms")
-    
-    return model_name
+        running_time = time.time() - start_time
+        print(f"VM {model_name}-{batch_size} inference latency : ",(running_time)*1000,"ms")
+        time_lst.append(running_time)
+    time_medium = np.array(time_list).medium()
+    return time_medium
