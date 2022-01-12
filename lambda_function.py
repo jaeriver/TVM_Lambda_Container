@@ -19,7 +19,7 @@ arch_type = 'intel'
 
 
 def make_dataset(batch_size,size):
-    image_shape = (3, size, size)
+    image_shape = (size, size, 3)
     data_shape = (batch_size,) + image_shape
 
     data = np.random.uniform(-1, 1, size=data_shape).astype("float32")
@@ -78,22 +78,23 @@ build_time = time.time()
 with tvm.transform.PassContext(opt_level=3):
     # executor = relay.build_module.create_executor("vm", mod, tvm.cpu(0), target)
     mod = relay.transform.InferType()(mod)
-    graph, lib, params = relay.build(mod, target=target, params=params)
-    
+    executor = relay.vm.compile(mod, target=target, params=params)
+
 print("-"*10,"Build latency : ",time.time()-build_time,"s","-"*10)
 
+# executor.evaluate()(data,**params)
+vm = VirtualMachine(executor,ctx)
+_out = vm.invoke("main",data)
+
 input_data = tvm.nd.array(data)
+
 
 def lambda_handler(event, context):
     batch_size = event['batch_size']
     size=224
     data, image_shape = make_dataset(batch_size,size)
-    print("-"*10,"Graph Executor RUN","-"*10)
-    from tvm.contrib import graph_executor
-    m = graph_executor.create(graph, lib, ctx)
-    m.set_input(**params)
     start_time = time.time()
-    m.run()
+    vm.run(input_data)
     print(f"VM {model_name}-{batch_size} inference latency : ",(time.time()-start_time)*1000,"ms")
     
     return model_name
