@@ -95,12 +95,12 @@ def lambda_handler(event, context):
 
     input_data = tvm.nd.array(data)
     
-    time_lst = []
+    time_list = []
     for i in range(count):
         start_time = time.time()
         vm.run(input_data)
         running_time = time.time() - start_time
         print(f"VM {model_name}-{batch_size} inference latency : ",(running_time)*1000,"ms")
-        time_lst.append(running_time)
+        time_list.append(running_time)
     time_medium = np.array(time_list).medium()
     return time_medium
