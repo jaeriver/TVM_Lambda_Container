@@ -5,8 +5,6 @@ import numpy as np
 import tvm 
 from tvm.contrib import graph_executor
 from tvm.contrib import graph_runtime
-import tvm.relay.testing.tf as tf_testing
-import tvm.testing 
 import onnx
 import boto3
 print('import time: ', time.time() - import_start_time)
