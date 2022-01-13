@@ -32,7 +32,7 @@ ctx = tvm.cpu()
 def lambda_handler(event, context):
     bucket_name = event['bucket_name']
     batch_size = event['batch_size']
-    model_name = event['model_name']
+    model_name = event['model_name'] +'_'+str(batch_size)+'_llvm'
     count = event['count']
     size = 224
     arch_type = 'intel'
