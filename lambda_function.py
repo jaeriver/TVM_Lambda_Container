@@ -24,7 +24,7 @@ def make_dataset(batch_size,size):
 
 load_model = time.time()
 
-target = 'llvm'
+target = 'llvm -device=arm_cpu'
 ctx = tvm.cpu()
 
 def lambda_handler(event, context):
