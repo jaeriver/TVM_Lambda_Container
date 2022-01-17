@@ -49,6 +49,7 @@ def lambda_handler(event, context):
         with tvm.transform.PassContext(opt_level=3):
             graph, lib, params = relay.build_module.build(mod, target=target, params=params)
         module = graph_runtime.create(graph, lib, ctx)
+        print('build time:', time.time() - build_time)
     else:
         model_path = get_model(model_name, bucket_name)
         loaded_lib = tvm.runtime.load_module(model_path)
