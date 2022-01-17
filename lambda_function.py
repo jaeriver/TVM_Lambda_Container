@@ -15,7 +15,7 @@ def get_model(model_name, bucket_name, get_path):
     
     return '/tmp/' + model_name
 def make_dataset(batch_size,size):
-    image_shape = (3, size, size)
+    image_shape = (size, size, 3)
     data_shape = (batch_size,) + image_shape
 
     data = np.random.uniform(-1, 1, size=data_shape).astype("float32")
