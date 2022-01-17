@@ -55,7 +55,7 @@ def lambda_handler(event, context):
         model_path = get_model(model_name, bucket_name)
         loaded_lib = tvm.runtime.load_module(model_path)
         module = graph_executor.GraphModule(loaded_lib["default"](ctx))
-    
+    module.set_input(**params)
     time_list = []
     for i in range(count):
         start_time = time.time()
