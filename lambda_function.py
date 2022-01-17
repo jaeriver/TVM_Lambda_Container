@@ -9,9 +9,9 @@ import onnx
 import boto3
 print('import time: ', time.time() - import_start_time)
 
-def get_model(model_name, bucket_name):
+def get_model(model_name, bucket_name, get_path):
     s3_client = boto3.client('s3')    
-    s3_client.download_file(bucket_name, 'tvm/'+ model_name, '/tmp/'+ model_name)
+    s3_client.download_file(bucket_name, get_path+ model_name, '/tmp/'+ model_name)
     
     return '/tmp/' + model_name
 def make_dataset(batch_size,size):
@@ -41,7 +41,8 @@ def lambda_handler(event, context):
     
     if is_build == 'true':
         print("ONNX model imported to relay frontend.")
-        onnx_model = onnx.load(onnx_name)
+        
+        onnx_model = onnx.load(get_model(onnx_name, bucket_name, 'onnx/'))
         shape_dict = {"input_1": data.shape}
         mod, params = relay.frontend.from_onnx(onnx_model, shape=shape_dict)
         build_time = time.time()
