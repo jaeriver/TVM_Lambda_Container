@@ -47,6 +47,7 @@ def lambda_handler(event, context):
         mod, params = relay.frontend.from_onnx(onnx_model, shape=shape_dict)
         build_time = time.time()
         with tvm.transform.PassContext(opt_level=3):
+            mod = relay.transform.InferType()(mod)
             graph, lib, params = relay.build_module.build(mod, target=target, params=params)
         module = graph_runtime.create(graph, lib, ctx)
         print('build time:', time.time() - build_time)
