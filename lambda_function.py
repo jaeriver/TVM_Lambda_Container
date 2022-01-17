@@ -36,7 +36,7 @@ def lambda_handler(event, context):
     bucket_name = event['bucket_name']
     batch_size = event['batch_size']
     onnx_name = event['model_name'] + '.onnx'
-    model_name = event['model_name'] +'_'+str(batch_size)+'_llvm.tar'
+    model_name = event['model_name'] +'_'+str(batch_size)+'_llvm'
     is_build = event['is_build']
     count = event['count']
     size = 224
