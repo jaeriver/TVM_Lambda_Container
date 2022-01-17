@@ -10,10 +10,15 @@ import boto3
 print('import time: ', time.time() - import_start_time)
 
 def get_model(model_name, bucket_name, get_path):
-    s3_client = boto3.client('s3')    
-    s3_client.download_file(bucket_name, get_path+ model_name, '/tmp/'+ model_name)
-    
-    return '/tmp/' + model_name
+    s3_client = boto3.client('s3')
+    if get_path == '/tvm':
+        s3_client.download_file(bucket_name, get_path + model_name +'/model.tar', '/tmp/'+ model_name)
+        s3_client.download_file(bucket_name, get_path + model_name +'/model.params', '/tmp/'+ model_name)
+        s3_client.download_file(bucket_name, get_path + model_name +'/model.json', '/tmp/'+ model_name)
+        return '/tmp/' + model_name + '/model.json', '/tmp/' + model_name + '/model.tar', '/tmp/' + model_name + '/model.params'
+    else:
+        s3_client.download_file(bucket_name, get_path + model_name, '/tmp/'+ model_name)
+        return '/tmp/' + model_name
 def make_dataset(batch_size,size):
     image_shape = (size, size, 3)
     data_shape = (batch_size,) + image_shape
@@ -35,7 +40,6 @@ def lambda_handler(event, context):
     is_build = event['is_build']
     count = event['count']
     size = 224
-    arch_type = 'intel'
 
     data, image_shape = make_dataset(batch_size,size)
     
@@ -52,9 +56,12 @@ def lambda_handler(event, context):
         module = graph_runtime.create(graph, lib, ctx)
         print('build time:', time.time() - build_time)
     else:
-        model_path = get_model(model_name, bucket_name)
-        loaded_lib = tvm.runtime.load_module(model_path)
-        module = graph_executor.GraphModule(loaded_lib["default"](ctx))
+        graph_fn, mod_fn, params_fn = get_model(model_name, bucket_name, 'tvm/')
+        loaded_graph = open(graph_fn).read()
+        loaded_mod = tvm.runtime.load_module(mod_fn)
+        loaded_params = open(params_fn, "rb").read()
+        module = graph_runtime.create(graph, lib, ctx)
+        
     module.set_input("input_1", data)
     module.set_input(**params)
     time_list = []
