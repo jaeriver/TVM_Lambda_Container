@@ -30,16 +30,28 @@ ctx = tvm.cpu()
 def lambda_handler(event, context):
     bucket_name = event['bucket_name']
     batch_size = event['batch_size']
+    onnx_name = event['model_name'] + '.onnx'
     model_name = event['model_name'] +'_'+str(batch_size)+'_llvm.tar'
+    is_build = event['is_build']
     count = event['count']
     size = 224
     arch_type = 'intel'
-    
-    model_path = get_model(model_name, bucket_name)
-    loaded_lib = tvm.runtime.load_module(model_path)
-    module = graph_executor.GraphModule(loaded_lib["default"](ctx))
-    
+
     data, image_shape = make_dataset(batch_size,size)
+    
+    if is_build == 'true':
+        print("ONNX model imported to relay frontend.")
+        onnx_model = onnx.load(onnx_name)
+        shape_dict = {"input_1": data.shape}
+        mod, params = relay.frontend.from_onnx(onnx_model, shape=shape_dict)
+        build_time = time.time()
+        with tvm.transform.PassContext(opt_level=3):
+            graph, lib, params = relay.build_module.build(mod, target=target, params=params)
+        module = graph_runtime.create(graph, lib, ctx)
+    else:
+        model_path = get_model(model_name, bucket_name)
+        loaded_lib = tvm.runtime.load_module(model_path)
+        module = graph_executor.GraphModule(loaded_lib["default"](ctx))
     
     time_list = []
     for i in range(count):
