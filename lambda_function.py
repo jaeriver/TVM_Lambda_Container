@@ -12,10 +12,11 @@ print('import time: ', time.time() - import_start_time)
 def get_model(model_name, bucket_name, get_path):
     s3_client = boto3.client('s3')
     if get_path == 'tvm/':
-        s3_client.download_file(bucket_name, get_path + model_name +'/model.tar', '/tmp/' + model_name + '/model.json')
-        s3_client.download_file(bucket_name, get_path + model_name +'/model.params', '/tmp/' + model_name + '/model.tar')
-        s3_client.download_file(bucket_name, get_path + model_name +'/model.json', '/tmp/' + model_name + '/model.params')
-        return '/tmp/' + model_name + '/model.json', '/tmp/' + model_name + '/model.tar', '/tmp/' + model_name + '/model.params'
+        print(get_path + model_name +'/model.tar')
+        s3_client.download_file(bucket_name, get_path + model_name +'/model.tar', '/tmp/model.tar')
+        s3_client.download_file(bucket_name, get_path + model_name +'/model.params', '/tmp/model.params')
+        s3_client.download_file(bucket_name, get_path + model_name +'/model.json', '/tmp/model.json')
+        return '/tmp/model.json', '/tmp/model.tar', '/tmp/model.params'
     else:
         s3_client.download_file(bucket_name, get_path + model_name, '/tmp/'+ model_name)
         return '/tmp/' + model_name
@@ -56,9 +57,9 @@ def lambda_handler(event, context):
         print('build time:', time.time() - build_time)
     else:
         graph_fn, mod_fn, params_fn = get_model(model_name, bucket_name, 'tvm/')
-        loaded_graph = open(graph_fn).read()
-        loaded_mod = tvm.runtime.load_module(mod_fn)
-        loaded_params = open(params_fn, "rb").read()
+        graph = open(graph_fn).read()
+        lib = tvm.runtime.load_module(mod_fn)
+        params = open(params_fn, "rb").read()
     module = graph_runtime.create(graph, lib, ctx)
     module.set_input("input_1", data)
     module.set_input(**params)
