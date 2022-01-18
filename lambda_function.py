@@ -36,7 +36,7 @@ def lambda_handler(event, context):
     batch_size = event['batch_size']
     onnx_name = event['model_name'] + '.onnx'
     arch_type = event['arch_type']
-    model_name = event['model_name'] +'_'+str(batch_size)+'_' + arch_type
+    model_name = 'intel/' + event['model_name'] +'_'+str(batch_size)+'_' + arch_type
     is_build = event['is_build']
     count = event['count']
     size = 224
