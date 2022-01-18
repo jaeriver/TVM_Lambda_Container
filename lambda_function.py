@@ -30,18 +30,23 @@ def make_dataset(batch_size,size):
 
 load_model = time.time()
 
-target = 'llvm'
-ctx = tvm.cpu()
 
 def lambda_handler(event, context):
     bucket_name = event['bucket_name']
     batch_size = event['batch_size']
     onnx_name = event['model_name'] + '.onnx'
-    model_name = event['model_name'] +'_'+str(batch_size)+'_llvm'
+    arch_type = event['arch_type']
+    model_name = event['model_name'] +'_'+str(batch_size)+'_' + arch_type
     is_build = event['is_build']
     count = event['count']
     size = 224
-
+    
+    if arch_type == 'arm':
+        target = tvm.target.arm_cpu()
+    else:
+        target = arch_type
+    ctx = tvm.cpu()
+    
     data, image_shape = make_dataset(batch_size,size)
     
     if is_build == 'true':
@@ -62,7 +67,7 @@ def lambda_handler(event, context):
         params = open(params_fn, "rb").read()
     module = graph_runtime.create(graph, lib, ctx)
     module.set_input("input_1", data)
-    module.set_input(**params)
+    module.load_params(params)
 
     time_list = []
     for i in range(count):
