@@ -60,14 +60,17 @@ def lambda_handler(event, context):
             mod = relay.transform.InferType()(mod)
             graph, lib, params = relay.build_module.build(mod, target=target, params=params)
         print('build time:', time.time() - build_time)
+        module = graph_runtime.create(graph, lib, ctx)
+        module.set_input("input_1", data)
+        module.set_input(**params)
     else:
         graph_fn, mod_fn, params_fn = get_model(model_name, bucket_name, 'tvm/')
         graph = open(graph_fn).read()
         lib = tvm.runtime.load_module(mod_fn)
         params = open(params_fn, "rb").read()
-    module = graph_runtime.create(graph, lib, ctx)
-    module.set_input("input_1", data)
-    module.load_params(params)
+        module = graph_runtime.create(graph, lib, ctx)
+        module.set_input("input_1", data)
+        module.load_params(params)
 
     time_list = []
     for i in range(count):
